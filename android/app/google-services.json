@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "807638818748",
+    "project_id": "panda-chat-e9ce8",
+    "storage_bucket": "panda-chat-e9ce8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:807638818748:android:310bd09b42aed9135315b9",
+        "android_client_info": {
+          "package_name": "com.example.chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "807638818748-opvcnffaa5h9dq2spm9ftnlpvgi2kk5b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRecHcOE_8Z3Uzu8IW9uKBi6Mi-XHUDKI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "807638818748-opvcnffaa5h9dq2spm9ftnlpvgi2kk5b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
