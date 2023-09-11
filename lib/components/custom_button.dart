@@ -1,31 +1,38 @@
-import 'package:chat/constants.dart';
 import 'package:flutter/material.dart';
 
-// ignore: must_be_immutable
 class CustomButton extends StatelessWidget {
-  CustomButton({super.key, required this.text, required this.onTap});
-  String text;
-  VoidCallback onTap;
+  const CustomButton({
+    super.key,
+    this.backgroundColor,
+    this.child,
+    required this.onTap,
+    this.borderRadius,
+    this.height,
+    this.width,
+    this.splashColor,
+  });
+  final Color? backgroundColor;
+  final VoidCallback onTap;
+  final BorderRadius? borderRadius;
+  final double? height;
+  final double? width;
+  final Color? splashColor;
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        height: 50,
-        decoration: BoxDecoration(
-          color: kSecondaryColor,
-          borderRadius: BorderRadius.circular(24),
-        ),
-        child: Center(
-          child: Text(
-            text,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontFamily: 'Cairo',
-            ),
+    return Material(
+      color: backgroundColor,
+      borderRadius: borderRadius,
+      child: InkWell(
+        splashColor: splashColor,
+        borderRadius: borderRadius,
+        onTap: onTap,
+        child: SizedBox(
+          width: width,
+          height: height,
+          child: Center(
+            child: child,
           ),
         ),
       ),

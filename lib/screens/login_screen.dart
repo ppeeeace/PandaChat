@@ -6,7 +6,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-
 import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -20,18 +19,24 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
   bool isLoading = false;
-
-  final CollectionReference users =
-      FirebaseFirestore.instance.collection('users');
 
   @override
   Widget build(BuildContext context) {
     return ModalProgressHUD(
       inAsyncCall: isLoading,
+      color: kPrimaryColor,
+      progressIndicator: const CircularProgressIndicator(
+        color: kSecondaryColor,
+      ),
       child: Scaffold(
-        appBar: AppBar(elevation: 0, backgroundColor: kPrimaryColor),
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: kPrimaryColor,
+        ),
         backgroundColor: kPrimaryColor,
         body: Form(
           key: _key,
@@ -42,8 +47,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const SizedBox(height: 28),
-                  Row(
-                    children: const [
+                  const Row(
+                    children: [
                       Text(
                         'Log In',
                         style: TextStyle(
@@ -73,48 +78,20 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 24),
                   CustomButton(
-                    text: 'Log in',
-                    onTap: () async {
-                      if (_key.currentState!.validate()) {
-                        setState(() {
-                          isLoading = true;
-                        });
-                        try {
-                          // ignore: unused_local_variable
-                          UserCredential user = await FirebaseAuth.instance
-                              .signInWithEmailAndPassword(
-                            email: emailController.text,
-                            password: passwordController.text,
-                          );
-                          users.add({
-                            'email': emailController.text,
-                            'time': DateTime.now(),
-                          });
-
-                          if (context.mounted) {
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => HomeScreen()),
-                              (route) => false,
-                            );
-                          }
-                        } on FirebaseAuthException catch (e) {
-                          if (e.code == 'user-not-found') {
-                            showSnackBar(
-                                context, 'No user found for that email.');
-                          } else if (e.code == 'wrong-password') {
-                            showSnackBar(context,
-                                'Wrong password provided for that user.');
-                          } else {
-                            showSnackBar(context, e.message.toString());
-                          }
-                        }
-                        setState(() {
-                          isLoading = false;
-                        });
-                      }
-                    },
+                    splashColor: Colors.purple,
+                    borderRadius: BorderRadius.circular(24),
+                    backgroundColor: kSecondaryColor,
+                    height: 50,
+                    width: double.infinity,
+                    onTap: _logIn,
+                    child: const Text(
+                      'Log In',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontFamily: 'Cairo',
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 18),
                   Row(
@@ -150,6 +127,47 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  void _logIn() async {
+    if (_key.currentState!.validate()) {
+      setState(() {
+        isLoading = true;
+      });
+      try {
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailController.text,
+          password: passwordController.text,
+        );
+        DocumentSnapshot userDataSnapshot = await _firestore
+            .collection('users')
+            .doc(_auth.currentUser!.uid)
+            .get();
+        Map<String, dynamic> userData =
+            userDataSnapshot.data() as Map<String, dynamic>;
+
+        if (context.mounted) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const HomeScreen(),
+            ),
+            (route) => false,
+          );
+        }
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'user-not-found') {
+          showSnackBar(context, 'No user found for that email.');
+        } else if (e.code == 'wrong-password') {
+          showSnackBar(context, 'Wrong password provided for that user.');
+        } else {
+          showSnackBar(context, e.message.toString());
+        }
+      }
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   void showSnackBar(BuildContext context, String text) {

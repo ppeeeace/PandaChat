@@ -34,16 +34,40 @@ class WelcomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 22),
               CustomButton(
-                  text: 'LOGIN',
-                  onTap: () {
-                    Navigator.pushReplacementNamed(context, LoginScreen.id);
-                  }),
+                splashColor: Colors.purple,
+                borderRadius: BorderRadius.circular(24),
+                backgroundColor: kSecondaryColor,
+                height: 50,
+                width: double.infinity,
+                onTap: () =>
+                    Navigator.pushReplacementNamed(context, LoginScreen.id),
+                child: const Text(
+                  'LOGIN',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontFamily: 'Cairo',
+                  ),
+                ),
+              ),
               const SizedBox(height: 12),
               CustomButton(
-                  text: 'SIGNUP',
-                  onTap: () {
-                    Navigator.pushReplacementNamed(context, SignupScreen.id);
-                  }),
+                splashColor: Colors.purple,
+                borderRadius: BorderRadius.circular(24),
+                backgroundColor: kSecondaryColor,
+                height: 50,
+                width: double.infinity,
+                onTap: () =>
+                    Navigator.pushReplacementNamed(context, SignupScreen.id),
+                child: const Text(
+                  'SIGNUP',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontFamily: 'Cairo',
+                  ),
+                ),
+              ),
             ],
           ),
         ),

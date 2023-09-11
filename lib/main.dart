@@ -21,30 +21,31 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (FirebaseAuth.instance.currentUser == null) {
-      return MaterialApp(
-        routes: {
-          WelcomeScreen.id: (context) => const WelcomeScreen(),
-          SignupScreen.id: (context) => const SignupScreen(),
-          LoginScreen.id: (context) => const LoginScreen(),
-          HomeScreen.id: (context) => HomeScreen(),
-          ChatScreen.id: (context) => ChatScreen(),
-        },
-        debugShowCheckedModeBanner: false,
-        home: const WelcomeScreen(),
-      );
+    return MaterialApp(
+      routes: {
+        WelcomeScreen.id: (context) => const WelcomeScreen(),
+        SignupScreen.id: (context) => const SignupScreen(),
+        LoginScreen.id: (context) => const LoginScreen(),
+        HomeScreen.id: (context) => const HomeScreen(),
+        ChatScreen.id: (context) => ChatScreen(),
+      },
+      debugShowCheckedModeBanner: false,
+      home: const AuthCheck(),
+    );
+  }
+}
+
+class AuthCheck extends StatelessWidget {
+  const AuthCheck({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      return const HomeScreen();
     } else {
-      return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: HomeScreen(),
-        routes: {
-          WelcomeScreen.id: (context) => const WelcomeScreen(),
-          SignupScreen.id: (context) => const SignupScreen(),
-          LoginScreen.id: (context) => const LoginScreen(),
-          HomeScreen.id: (context) => HomeScreen(),
-          ChatScreen.id: (context) => ChatScreen(),
-        },
-      );
+      return const WelcomeScreen();
     }
   }
 }

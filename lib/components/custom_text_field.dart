@@ -1,9 +1,8 @@
 import 'package:chat/constants.dart';
 import 'package:flutter/material.dart';
 
-// ignore: must_be_immutable
 class CustomTextFormField extends StatelessWidget {
-  CustomTextFormField({
+  const CustomTextFormField({
     super.key,
     this.hint,
     this.iconn,
@@ -13,13 +12,13 @@ class CustomTextFormField extends StatelessWidget {
     this.controller,
     this.validate,
   });
-  String? hint;
-  IconData? iconn;
-  TextInputType? textType;
-  bool? hideText;
-  Function(String)? onChanged;
-  TextEditingController? controller;
-  String? Function(String?)? validate;
+  final String? hint;
+  final IconData? iconn;
+  final TextInputType? textType;
+  final bool? hideText;
+  final Function(String)? onChanged;
+  final TextEditingController? controller;
+  final String? Function(String?)? validate;
 
   @override
   Widget build(BuildContext context) {

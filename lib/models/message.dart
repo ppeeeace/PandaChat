@@ -1,14 +1,16 @@
 class Message {
   final String? text;
-  final String? id;
+  final String? senderUid;
+
   Message({
     this.text,
-    this.id,
+    this.senderUid,
   });
+
   factory Message.fromJson(jsonData) {
     return Message(
       text: jsonData['message'],
-      id: jsonData['id'],
+      senderUid: jsonData['senderUid'],
     );
   }
 }

@@ -1,4 +1,3 @@
-import 'package:chat/screens/home_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -19,19 +18,25 @@ class SignupScreen extends StatefulWidget {
 class _SignupScreenState extends State<SignupScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-
+  final usernameController = TextEditingController();
+  final _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
   bool isLoading = false;
-
-  final CollectionReference users =
-      FirebaseFirestore.instance.collection('users');
 
   @override
   Widget build(BuildContext context) {
     return ModalProgressHUD(
       inAsyncCall: isLoading,
+      color: kPrimaryColor,
+      progressIndicator: const CircularProgressIndicator(
+        color: kSecondaryColor,
+      ),
       child: Scaffold(
-        appBar: AppBar(elevation: 0, backgroundColor: kPrimaryColor),
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: kPrimaryColor,
+        ),
         backgroundColor: kPrimaryColor,
         body: Form(
           key: _key,
@@ -41,9 +46,9 @@ class _SignupScreenState extends State<SignupScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 28),
-                  Row(
-                    children: const [
+                  const SizedBox(height: 20),
+                  const Row(
+                    children: [
                       Text(
                         'Sign Up',
                         style: TextStyle(
@@ -54,14 +59,14 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 60),
-                  // CustomTextFormField(
-                  //   hint: 'Name',
-                  //   iconn: Icons.person,
-                  //   textType: TextInputType.name,
-                  //   controller: nameController,
-                  // ),
-                  // const SizedBox(height: 12),
+                  const SizedBox(height: 42),
+                  CustomTextFormField(
+                    hint: 'Username',
+                    iconn: Icons.person,
+                    textType: TextInputType.name,
+                    controller: usernameController,
+                  ),
+                  const SizedBox(height: 12),
                   CustomTextFormField(
                     hint: 'Email',
                     iconn: Icons.email,
@@ -80,48 +85,20 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                   const SizedBox(height: 24),
                   CustomButton(
-                    text: 'Sign up',
-                    onTap: () async {
-                      if (_key.currentState!.validate()) {
-                        setState(() {
-                          isLoading = true;
-                        });
-                        try {
-                          // ignore: unused_local_variable
-                          UserCredential user = await FirebaseAuth.instance
-                              .createUserWithEmailAndPassword(
-                            email: emailController.text,
-                            password: passwordController.text,
-                          );
-                          users.add({
-                            'email': emailController.text,
-                            'time': DateTime.now(),
-                          });
-                          if (context.mounted) {
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => HomeScreen(),
-                              ),
-                              (route) => false,
-                            );
-                          }
-                        } on FirebaseAuthException catch (e) {
-                          if (e.code == 'weak-password') {
-                            showSnackBar(
-                                context, 'The password provided is too weak.');
-                          } else if (e.code == 'email-already-in-use') {
-                            showSnackBar(context,
-                                'The account already exists for that email.');
-                          } else {
-                            showSnackBar(context, e.message.toString());
-                          }
-                        }
-                        setState(() {
-                          isLoading = false;
-                        });
-                      }
-                    },
+                    splashColor: Colors.purple,
+                    borderRadius: BorderRadius.circular(24),
+                    backgroundColor: kSecondaryColor,
+                    height: 50,
+                    width: double.infinity,
+                    onTap: _signUp,
+                    child: const Text(
+                      'Sign Up',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontFamily: 'Cairo',
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 18),
                   Row(
@@ -157,6 +134,46 @@ class _SignupScreenState extends State<SignupScreen> {
         ),
       ),
     );
+  }
+
+  void _signUp() async {
+    if (_key.currentState!.validate()) {
+      setState(() {
+        isLoading = true;
+      });
+      try {
+        final newUser = await _auth.createUserWithEmailAndPassword(
+          email: emailController.text,
+          password: passwordController.text,
+        );
+        await _firestore.collection('users').doc(newUser.user!.uid).set({
+          'email': emailController.text,
+          'username': usernameController.text,
+        });
+        if (context.mounted) {
+          if (!Navigator.canPop(context)) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const LoginScreen(),
+                ));
+          } else {
+            Navigator.pop(context);
+          }
+        }
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'weak-password') {
+          showSnackBar(context, 'The password provided is too weak.');
+        } else if (e.code == 'email-already-in-use') {
+          showSnackBar(context, 'The account already exists for that email.');
+        } else {
+          showSnackBar(context, e.message.toString());
+        }
+      }
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   void showSnackBar(BuildContext context, String text) {
