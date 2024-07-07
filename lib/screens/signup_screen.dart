@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import '../components/custom_button.dart';
-import '../components/custom_text_field.dart';
+import '../widgets/custom_button.dart';
+import '../widgets/custom_text_field.dart';
 import '../constants.dart';
 import 'login_screen.dart';
 
@@ -147,6 +147,7 @@ class _SignupScreenState extends State<SignupScreen> {
           password: passwordController.text,
         );
         await _firestore.collection('users').doc(newUser.user!.uid).set({
+          'uid': newUser.user!.uid,
           'email': emailController.text,
           'username': usernameController.text,
         });

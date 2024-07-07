@@ -1,4 +1,4 @@
-import 'package:chat/components/custom_button.dart';
+import 'package:chat/widgets/custom_button.dart';
 import 'package:chat/constants.dart';
 import 'package:chat/screens/login_screen.dart';
 import 'package:chat/screens/signup_screen.dart';

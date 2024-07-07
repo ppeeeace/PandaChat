@@ -1,5 +1,5 @@
-import 'package:chat/components/custom_button.dart';
-import 'package:chat/components/custom_text_field.dart';
+import 'package:chat/widgets/custom_button.dart';
+import 'package:chat/widgets/custom_text_field.dart';
 import 'package:chat/constants.dart';
 import 'package:chat/screens/signup_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -150,7 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-              builder: (context) => const HomeScreen(),
+              builder: (context) => HomeScreen(),
             ),
             (route) => false,
           );

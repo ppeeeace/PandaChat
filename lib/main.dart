@@ -1,4 +1,3 @@
-import 'package:chat/screens/chat_screen.dart';
 import 'package:chat/screens/home_screen.dart';
 import 'package:chat/screens/login_screen.dart';
 import 'package:chat/screens/signup_screen.dart';
@@ -26,8 +25,7 @@ class MyApp extends StatelessWidget {
         WelcomeScreen.id: (context) => const WelcomeScreen(),
         SignupScreen.id: (context) => const SignupScreen(),
         LoginScreen.id: (context) => const LoginScreen(),
-        HomeScreen.id: (context) => const HomeScreen(),
-        ChatScreen.id: (context) => ChatScreen(),
+        HomeScreen.id: (context) => HomeScreen(),
       },
       debugShowCheckedModeBanner: false,
       home: const AuthCheck(),
@@ -43,7 +41,7 @@ class AuthCheck extends StatelessWidget {
     User? user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
-      return const HomeScreen();
+      return HomeScreen();
     } else {
       return const WelcomeScreen();
     }
